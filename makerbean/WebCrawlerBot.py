@@ -2,7 +2,7 @@
 # @Author: ander
 # @Date:   2020-12-22 16:13:58
 # @Last Modified by:   Anderson
-# @Last Modified time: 2020-12-25 12:30:34
+# @Last Modified time: 2021-02-01 15:17:23
 import json
 import time
 from copy import copy
@@ -25,6 +25,9 @@ class WebCrawlerBot(object):
 		self.session = requests.Session()
 		self.抓取猎聘 = self.get_liepin
 		self.抓取论文 = self.get_arxiv
+		self.抓取花瓣 = self.get_huaban
+		self.抓取微博热搜 = self.get_weibo_hot
+		self.下载图片 = self.download_image
 
 	def set_cookie(self, cookie):
 		self.headers['cookie'] = cookie

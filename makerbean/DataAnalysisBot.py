@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: ander
 # @Date:   2020-12-22 16:21:12
-# @Last Modified by:   Anderson
-# @Last Modified time: 2020-12-25 11:46:55
+# @Last Modified by:   ander
+# @Last Modified time: 2021-02-25 13:50:02
 import pandas as pd
 from pyecharts import options as opts
 from pyecharts.charts import Bar
@@ -20,6 +20,7 @@ class _MyDataFrame:
 		self.df = data
 		self.列名称 = self.column_names
 		self.提取一列数据 = self.get_col
+		self.设定一列数据 = self.set_col
 		self.文字筛选 = self.filter_words
 		self.合并统计 = self.value_counts
 
@@ -35,6 +36,14 @@ class _MyDataFrame:
 
 	def get_col(self, col):
 		return self.df[col]
+
+	def set_col(self, col, data):
+		if self.df[col].size != len(data):
+			raise RuntimeError(f'传入数据长度为{len(data)}，本列数据长度为{self.df[col].size}，数据长度不一致，无法设定！')
+		else:
+			new_df = self.df.copy()
+			new_df[col] = data
+			return _MyDataFrame(new_df)
 
 	def filter_words(self, col, value):
 		return _MyDataFrame(self.df[self.df[col] == value])
@@ -71,6 +80,12 @@ class _MyDataFrame:
 			cut_data[col] = cut_data[col].apply(cut_str)
 			return _MyDataFrame(cut_data)
 
+	def 删除前缀(self, col, 前缀=''):
+		return self.remove_prefix(col, 前缀)
+
+	def remove_prefix(self, col, prefix):
+		return _MyDataFrame(self.df[col].str.lstrip(prefix))
+
 
 class DataAnalysisBot(object):
 	"""docstring for DataAnalysisBot"""
@@ -85,6 +100,10 @@ class DataAnalysisBot(object):
 		if name == '商品订单数据':
 			from .data import orders_data
 			data = _MyDataFrame(pd.DataFrame(orders_data))
+			return data
+		elif name == '用户信息数据':
+			from .data import user_info
+			data = _MyDataFrame(pd.DataFrame(user_info))
 			return data
 
 	def set_data(self, data):
