@@ -2,7 +2,7 @@
 # @Author: ander
 # @Date:   2020-12-22 16:21:12
 # @Last Modified by:   ander
-# @Last Modified time: 2021-02-25 13:50:02
+# @Last Modified time: 2021-02-25 15:37:31
 import pandas as pd
 from pyecharts import options as opts
 from pyecharts.charts import Bar
@@ -84,7 +84,9 @@ class _MyDataFrame:
 		return self.remove_prefix(col, 前缀)
 
 	def remove_prefix(self, col, prefix):
-		return _MyDataFrame(self.df[col].str.lstrip(prefix))
+		new_df = self.df.copy()
+		new_df[col] = new_df.df[col].str.lstrip(prefix)
+		return _MyDataFrame(new_df)
 
 
 class DataAnalysisBot(object):
