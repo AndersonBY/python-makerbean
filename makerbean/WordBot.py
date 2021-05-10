@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: ander
 # @Date:   2020-12-22 16:19:12
-# @Last Modified by:   ander
-# @Last Modified time: 2020-12-22 16:19:27
+# @Last Modified by:   Anderson
+# @Last Modified time: 2021-05-10 15:05:45
 from docx import Document
 
 
@@ -11,6 +11,12 @@ class WordBot(object):
 
 	def __init__(self):
 		self.doc = Document()
+		self.打开文档 = self.open
+		self.保存文档 = self.save
+		self.设置段落 = self.set_paragraph
+		self.读取段落 = self.get_paragraph
+		self.所有段落 = self.paragraphs
+		self.清空内容 = self.clear
 
 	def set_paragraph(self, index, text):
 		if index < len(self.doc.paragraphs):

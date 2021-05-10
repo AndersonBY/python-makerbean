@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 # @Author: Anderson
 # @Date:   2019-11-14 17:45:03
-# @Last Modified by:   ander
-# @Last Modified time: 2021-02-25 15:37:46
+# @Last Modified by:   Anderson
+# @Last Modified time: 2021-05-10 15:06:43
 import setuptools
 
 
 setuptools.setup(
     name="makerbean",
-    version="0.1.3",
+    version="0.1.5",
     author="MakerBi",
     author_email="andersonby@163.com",
     description="A small educational purpose package",
     long_description_content_type="text/markdown",
-    url="https://makerbean.com",
+    url="https://github.com/AndersonBY/python-makerbean",
     packages=setuptools.find_packages(),
     install_requires=['openpyxl', 'requests', 'beautifulsoup4', 'lxml', 'jieba', 'pyecharts', 'pdfplumber', 'PyPDF2', 'python-docx', 'pandas'],
     classifiers=[

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 # @Author: ander
 # @Date:   2020-12-22 16:21:12
-# @Last Modified by:   ander
-# @Last Modified time: 2021-02-25 15:40:41
+# @Last Modified by:   Anderson
+# @Last Modified time: 2021-05-10 14:14:32
+import os.path
 import pandas as pd
 from pyecharts import options as opts
 from pyecharts.charts import Bar
@@ -97,6 +98,7 @@ class DataAnalysisBot(object):
 		self.生成词云图 = self.generate_word_cloud
 		self.生成3D地图 = self.generate_3d_map
 		self.加载内置数据 = self.load_builtin_data
+		self.加载外部数据 = self.load_external_data
 
 	def load_builtin_data(self, name):
 		if name == '商品订单数据':
@@ -107,6 +109,13 @@ class DataAnalysisBot(object):
 			from .data import user_info
 			data = _MyDataFrame(pd.DataFrame(user_info))
 			return data
+
+	def load_external_data(self, filepath):
+		if os.path.splitext(filepath.lower())[1] == '.csv':
+			data = _MyDataFrame(pd.read_csv(filepath))
+			return data
+		else:
+			raise OSError('文件非csv格式')
 
 	def set_data(self, data):
 		self.data = copy(data)
