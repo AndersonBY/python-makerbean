@@ -7,41 +7,41 @@ from docx import Document
 
 
 class WordBot(object):
-	"""docstring for WordBot"""
+    """docstring for WordBot"""
 
-	def __init__(self):
-		self.doc = Document()
-		self.打开文档 = self.open
-		self.保存文档 = self.save
-		self.设置段落 = self.set_paragraph
-		self.读取段落 = self.get_paragraph
-		self.所有段落 = self.paragraphs
-		self.清空内容 = self.clear
+    def __init__(self):
+        self.doc = Document()
+        self.打开文档 = self.open
+        self.保存文档 = self.save
+        self.设置段落 = self.set_paragraph
+        self.读取段落 = self.get_paragraph
+        self.所有段落 = self.paragraphs
+        self.清空内容 = self.clear
 
-	def set_paragraph(self, index, text):
-		if index < len(self.doc.paragraphs):
-			self.doc.paragraphs[index].text = str(text)
-			return True
-		else:
-			return False
+    def set_paragraph(self, index, text):
+        if index < len(self.doc.paragraphs):
+            self.doc.paragraphs[index].text = str(text)
+            return True
+        else:
+            return False
 
-	def get_paragraph(self, index):
-		if index < len(self.doc.paragraphs):
-			return str(self.doc.paragraphs[index].text)
-		else:
-			return ''
+    def get_paragraph(self, index):
+        if index < len(self.doc.paragraphs):
+            return str(self.doc.paragraphs[index].text)
+        else:
+            return ""
 
-	@property
-	def paragraphs(self):
-		return [str(p.text) for p in self.doc.paragraphs]
+    @property
+    def paragraphs(self):
+        return [str(p.text) for p in self.doc.paragraphs]
 
-	def clear(self):
-		self.doc = Document()
+    def clear(self):
+        self.doc = Document()
 
-	def open(self, filename):
-		self.doc = Document(filename)
+    def open(self, filename):
+        self.doc = Document(filename)
 
-	def save(self, filename):
-		if not filename:
-			filename = 'tmp'
-		self.doc.save(f'{filename}.docx')
+    def save(self, filename):
+        if not filename:
+            filename = "tmp"
+        self.doc.save(f"{filename}.docx")

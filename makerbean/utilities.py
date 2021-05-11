@@ -8,11 +8,11 @@ import os
 
 
 def validate_title(title):
-	rstr = r"[\/\\\:\*\?\"\<\>\|\%]"
-	new_title = re.sub(rstr, "_", title)
-	return new_title
+    rstr = r"[\/\\\:\*\?\"\<\>\|\%]"
+    new_title = re.sub(rstr, "_", title)
+    return new_title
 
 
 def mkdir(folder):
-	if not os.path.exists(folder):
-		os.mkdir(folder)
+    if not os.path.exists(folder):
+        os.mkdir(folder)
