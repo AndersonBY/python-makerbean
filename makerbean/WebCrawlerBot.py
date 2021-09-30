@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: ander
 # @Date:   2020-12-22 16:13:58
-# @Last Modified by:   ander
-# @Last Modified time: 2021-05-11 11:58:58
+# @Last Modified by:   Anderson
+# @Last Modified time: 2021-10-01 01:03:30
 import json
 import time
 from copy import copy
@@ -58,34 +58,29 @@ class WebCrawlerBot(object):
 
     def get_liepin(self, keyword, start_page, end_page=None):
         if keyword not in self.liepin_urls:
-            req = self.session.get(
-                f"https://www.liepin.com/zhaopin/?sfrom=click-pc_homepage-centre_searchbox-search_new&d_sfrom=search_fp&key={quote_plus(keyword)}",
-                headers=self.headers,
-            )
-            soup = BeautifulSoup(req.text, "lxml")
-            self.liepin_urls[keyword] = "https://www.liepin.com"
-            self.liepin_urls[keyword] += "&d_curPage={d_curPage}".join(
-                soup.select(".pagerbar a")[3]["href"].split("&d_curPage=")
-            )
-            self.liepin_urls[keyword] = (
-                self.liepin_urls[keyword].split("&curPage=")[0] + "&curPage={curPage}"
-            )
+            url = f'https://www.liepin.com/zhaopin/?key={quote_plus(keyword)}'
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36'
+            }
+            req = requests.get(url, headers=headers)
+            soup = BeautifulSoup(req.text, 'lxml')
+            inputs = soup.select('#filter-options-form input')
+            head_id = inputs[0]['value']
+            ck_id = inputs[1]['value']
+            self.liepin_urls[keyword] = f"https://www.liepin.com/zhaopin/?headId={head_id}&ckId={ck_id}&key={quote_plus(keyword)}&currentPage="
         if end_page is None:
             end_page = start_page + 1
         results = []
         for page in range(start_page, end_page):
             time.sleep(1)
-            if page > 0:
-                url = self.liepin_urls[keyword].format(d_curPage=page - 1, curPage=page)
-            else:
-                url = self.liepin_urls[keyword].format(d_curPage=page + 1, curPage=page)
+            url = self.liepin_urls[keyword] + str(page)
             req = requests.get(url, headers=self.headers)
             soup = BeautifulSoup(req.text, "lxml")
-            for item in soup.select(".sojob-item-main"):
-                job_name = item.select("h3 a")[0].text.strip()
-                job_company = item.select(".company-name")[0].text.strip()
-                job_field = item.select(".field-financing")[0].text.strip()
-                job_salary = item.select(".condition .text-warning")[0].text.strip()
+            for item in soup.select(".job-list-item"):
+                job_name = item.select_one(".job-title-box>.ellipsis-1").text.strip()
+                job_company = item.select_one(".company-name").text.strip()
+                company_tags = item.select_one(".company-tags-box").text.strip()
+                job_salary = item.select_one(".job-salary").text.strip()
                 if job_salary == "面议":
                     annual_salary = -1
                 else:
@@ -94,7 +89,7 @@ class WebCrawlerBot(object):
                         if "k" in job_salary:
                             max_salary = int(
                                 job_salary[
-                                    job_salary.index("-") + 1 : job_salary.index("k")
+                                    job_salary.index("-") + 1: job_salary.index("k")
                                 ]
                             )
                         elif "万" in job_salary:
@@ -102,7 +97,7 @@ class WebCrawlerBot(object):
                                 int(
                                     job_salary[
                                         job_salary.index("-")
-                                        + 1 : job_salary.index("万")
+                                        + 1: job_salary.index("万")
                                     ]
                                 )
                                 * 10
@@ -110,7 +105,7 @@ class WebCrawlerBot(object):
                         else:
                             max_salary = min_salary
                         months = (
-                            int(job_salary[job_salary.index("·") + 1 : -1])
+                            int(job_salary[job_salary.index("·") + 1: -1])
                             if "·" in job_salary
                             else 12
                         )
@@ -123,7 +118,7 @@ class WebCrawlerBot(object):
                                 int(
                                     job_salary[
                                         job_salary.index("-")
-                                        + 1 : job_salary.index("万")
+                                        + 1: job_salary.index("万")
                                     ]
                                 )
                                 * 10
@@ -136,14 +131,14 @@ class WebCrawlerBot(object):
                             else 12
                         )
                         annual_salary = monthly_salary * months * 1000
-                job_area = item.select(".condition .area")[0].text.strip()
-                job_edu = item.select(".condition .edu")[0].text.strip()
-                job_experience = item.select(".condition span")[-1].text.strip()
+                job_area = item.select_one(".job-dq-box .ellipsis-1").text.strip()
+                job_edu = item.select(".job-labels-box .labels-tag")[0].text.strip()
+                job_experience = item.select(".job-labels-box .labels-tag")[-1].text.strip()
                 results.append(
                     [
                         job_name,
                         job_company,
-                        job_field,
+                        company_tags,
                         job_salary,
                         annual_salary,
                         job_area,
